@@ -1,4 +1,4 @@
-namespace LibTemplate.Options
+namespace TotpLib.Options
 {
 	public class DemoClassOptions
 	{

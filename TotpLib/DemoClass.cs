@@ -1,9 +1,9 @@
 using JetBrains.Annotations;
-using LibTemplate.Options;
 using Microsoft.Extensions.Options;
+using TotpLib.Options;
 using Volo.Abp.DependencyInjection;
 
-namespace LibTemplate
+namespace TotpLib
 {
 	[UsedImplicitly]
 	public class DemoClass : ITransientDependency

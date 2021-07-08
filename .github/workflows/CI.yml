@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ProjectName: [ LibTemplate ]
+        ProjectName: [ TotpLib ]
 
     steps:
     - name: Checkout code

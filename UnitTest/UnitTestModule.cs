@@ -1,11 +1,11 @@
 using JetBrains.Annotations;
-using LibTemplate;
-using LibTemplate.Options;
+using TotpLib;
+using TotpLib.Options;
 using Volo.Abp.Modularity;
 
 namespace UnitTest
 {
-	[DependsOn(typeof(LibTemplateModule))]
+	[DependsOn(typeof(TotpLibModule))]
 	[UsedImplicitly]
 	public class UnitTestModule : AbpModule
 	{

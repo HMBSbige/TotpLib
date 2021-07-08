@@ -6,7 +6,7 @@
     <Authors>HMBSbige</Authors>
     <Copyright>Copyright © 2021 HMBSbige</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/HMBSbige/LibTemplate</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/HMBSbige/LibTemplate</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/HMBSbige/TotpLib</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/HMBSbige/TotpLib</RepositoryUrl>
   </PropertyGroup>
 </Project>

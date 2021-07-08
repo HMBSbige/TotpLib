@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LibTemplate\LibTemplate.csproj" />
+    <ProjectReference Include="..\TotpLib\TotpLib.csproj" />
   </ItemGroup>
 
 </Project>
