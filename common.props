@@ -8,5 +8,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/HMBSbige/TotpLib</PackageProjectUrl>
     <RepositoryUrl>https://github.com/HMBSbige/TotpLib</RepositoryUrl>
+    <PackageTags>otp;totp;2fa;</PackageTags>
+    <Description>Modern .NET library for TOTP.</Description>
   </PropertyGroup>
 </Project>
