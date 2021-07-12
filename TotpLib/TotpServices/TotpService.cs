@@ -60,7 +60,7 @@ namespace TotpLib.TotpServices
 			{
 				var span = buffer.AsSpan(0, length);
 				RandomNumberGenerator.Fill(span);
-				Secret = ((ReadOnlySpan<byte>)span).ToBase32String();
+				Secret = span.ToBase32String();
 			}
 			finally
 			{
@@ -256,11 +256,6 @@ namespace TotpLib.TotpServices
 
 		private static bool IsValidSecret([NotNullWhen(true)] string? secret)
 		{
-			if (string.IsNullOrEmpty(secret))
-			{
-				return false;
-			}
-
 			try
 			{
 				var b = secret.AsSpan().FromBase32String();

@@ -39,7 +39,7 @@ namespace UnitTest
 			Assert.IsNotNull(service.Secret);
 			Console.WriteLine(service.Secret);
 
-			var actualLength = service.Secret.AsSpan().FromBase32String().Length;
+			var actualLength = service.Secret.FromBase32String().Length;
 			Assert.IsTrue((uint)actualLength << 3 >= bit);
 		}
 
@@ -68,7 +68,7 @@ namespace UnitTest
 		public void GetTokenTest(string rawSecret, string utcTimeStr, long timestamp, string expected, string mode)
 		{
 			var service = GetRequiredService<ITotpService>();
-			service.Secret = ((ReadOnlySpan<byte>)Encoding.ASCII.GetBytes(rawSecret)).ToBase32String();
+			service.Secret = Encoding.ASCII.GetBytes(rawSecret).AsSpan().ToBase32String();
 			service.Period = 30;
 			service.Digits = (uint)expected.Length;
 			service.Algorithm = new HmacAlgorithmName(@"HMAC" + mode);
@@ -87,7 +87,7 @@ namespace UnitTest
 		public void GetSteamTokenTest(long timestamp, string expected)
 		{
 			var service = GetRequiredService<ITotpService>();
-			service.Secret = ((ReadOnlySpan<byte>)Encoding.ASCII.GetBytes(@"12345678901234567890")).ToBase32String();
+			service.Secret = Encoding.ASCII.GetBytes(@"12345678901234567890").AsSpan().ToBase32String();
 			service.Period = 30;
 			service.Algorithm = HmacAlgorithmName.SHA1;
 			service.Digits = 0;
@@ -183,7 +183,7 @@ namespace UnitTest
 		public void ValidateTokenTest(string rawSecret, long timestamp, string token, bool shouldAccept)
 		{
 			var service = GetRequiredService<ITotpService>();
-			service.Secret = ((ReadOnlySpan<byte>)Encoding.ASCII.GetBytes(rawSecret)).ToBase32String();
+			service.Secret = Encoding.ASCII.GetBytes(rawSecret).AsSpan().ToBase32String();
 			service.Period = 30;
 			service.Digits = (uint)token.Length;
 			service.Algorithm = HmacAlgorithmName.SHA1;
