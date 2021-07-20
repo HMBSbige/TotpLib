@@ -20,6 +20,8 @@ namespace TotpLib.TotpServices
 
 		uint Digits { get; set; }
 
+		TotpOutputType OutputType { get; set; }
+
 		uint ExtraGap { get; set; }
 
 		void GenerateNewSecret(uint minimumBits = 80);

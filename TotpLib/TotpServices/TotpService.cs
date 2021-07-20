@@ -41,6 +41,8 @@ namespace TotpLib.TotpServices
 
 		public uint Digits { get; set; } = 6;
 
+		public TotpOutputType OutputType { get; set; } = TotpOutputType.RFC;
+
 		public uint ExtraGap { get; set; } = 1;
 
 		private readonly IAbpLazyServiceProvider _lazyServiceProvider;
@@ -97,12 +99,19 @@ namespace TotpLib.TotpServices
 			var offset = hash[^1] & 0xF;
 			var i = BinaryPrimitives.ReadUInt32BigEndian(hash[offset..]) & 0x7FFFFFFF;
 
-			if (IsSteamToken())
+			var length = (int)Digits;
+
+			if (length <= 0)
 			{
-				return GetSteamToken(i);
+				return GetSteamToken(i, 5);
 			}
 
-			return string.Create((int)Digits, i, (chars, token) =>
+			if (OutputType is TotpOutputType.Steam)
+			{
+				return GetSteamToken(i, length);
+			}
+
+			return string.Create(length, i, (chars, token) =>
 			{
 				for (var j = chars.Length - 1; j >= 0; j--)
 				{
@@ -281,19 +290,13 @@ namespace TotpLib.TotpServices
 			}
 		}
 
-		private bool IsSteamToken()
-		{
-			return (int)Digits <= 0;
-		}
-
 		private static long GetTimeStamp(DateTime utcTime)
 		{
 			return (long)utcTime.Subtract(DateTime.UnixEpoch).TotalSeconds;
 		}
 
-		private static string GetSteamToken(uint i)
+		private static string GetSteamToken(uint i, int length)
 		{
-			const int length = 5;
 			const string steamAuthTable = @"23456789BCDFGHJKMNPQRTVWXY";
 
 			return string.Create(length, i, (chars, token) =>

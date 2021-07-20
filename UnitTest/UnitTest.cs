@@ -72,6 +72,7 @@ namespace UnitTest
 			service.Period = 30;
 			service.Digits = (uint)expected.Length;
 			service.Algorithm = new HmacAlgorithmName(@"HMAC" + mode);
+			service.OutputType = TotpOutputType.RFC;
 
 			Assert.AreEqual(expected, service.GetToken(timestamp));
 			Assert.AreEqual(expected, service.GetToken(DateTime.Parse(utcTimeStr)));
@@ -90,7 +91,8 @@ namespace UnitTest
 			service.Secret = Encoding.ASCII.GetBytes(@"12345678901234567890").AsSpan().ToBase32String();
 			service.Period = 30;
 			service.Algorithm = HmacAlgorithmName.SHA1;
-			service.Digits = 0;
+			service.Digits = 5;
+			service.OutputType = TotpOutputType.Steam;
 
 			Assert.AreEqual(expected, service.GetToken(timestamp));
 		}
@@ -133,6 +135,7 @@ namespace UnitTest
 			Assert.AreEqual(30U, service.Period);
 			Assert.AreEqual(HmacAlgorithmName.SHA1, service.Algorithm);
 			Assert.AreEqual(6U, service.Digits);
+			Assert.AreEqual(TotpOutputType.RFC, service.OutputType);
 
 			Assert.IsTrue(service.TryParse(@"otpauth://totp/?secret=JTQZIMD5U2PXT5MJ&issuer=HMBSbige"));
 			Assert.AreEqual(@"JTQZIMD5U2PXT5MJ", service.Secret);
@@ -141,6 +144,7 @@ namespace UnitTest
 			Assert.AreEqual(30U, service.Period);
 			Assert.AreEqual(HmacAlgorithmName.SHA1, service.Algorithm);
 			Assert.AreEqual(6U, service.Digits);
+			Assert.AreEqual(TotpOutputType.RFC, service.OutputType);
 
 			Assert.IsTrue(service.TryParse(@"otpauth://totp/?secret=JTQZIMD5U2PXT5MJ&issuer=HMBSbige&period=114514"));
 			Assert.AreEqual(@"JTQZIMD5U2PXT5MJ", service.Secret);
@@ -149,6 +153,7 @@ namespace UnitTest
 			Assert.AreEqual(114514U, service.Period);
 			Assert.AreEqual(HmacAlgorithmName.SHA1, service.Algorithm);
 			Assert.AreEqual(6U, service.Digits);
+			Assert.AreEqual(TotpOutputType.RFC, service.OutputType);
 
 			Assert.IsTrue(service.TryParse(@"otpauth://totp/?secret=JTQZIMD5U2PXT5MJ&issuer=HMBSbige&period=114514&algorithm=SHA256"));
 			Assert.AreEqual(@"JTQZIMD5U2PXT5MJ", service.Secret);
@@ -157,6 +162,7 @@ namespace UnitTest
 			Assert.AreEqual(114514U, service.Period);
 			Assert.AreEqual(HmacAlgorithmName.SHA256, service.Algorithm);
 			Assert.AreEqual(6U, service.Digits);
+			Assert.AreEqual(TotpOutputType.RFC, service.OutputType);
 
 			Assert.IsTrue(service.TryParse(@"otpauth://totp/?secret=JTQZIMD5U2PXT5MJ&issuer=HMBSbige&period=114514&algorithm=SHA256&digits=8"));
 			Assert.AreEqual(@"JTQZIMD5U2PXT5MJ", service.Secret);
@@ -165,6 +171,7 @@ namespace UnitTest
 			Assert.AreEqual(114514U, service.Period);
 			Assert.AreEqual(HmacAlgorithmName.SHA256, service.Algorithm);
 			Assert.AreEqual(8U, service.Digits);
+			Assert.AreEqual(TotpOutputType.RFC, service.OutputType);
 
 			Assert.IsTrue(service.TryParse(@"otpauth://totp/Google%20%E9%AA%8C%E8%AF%81%E5%99%A8?secret=JTQZIMD5U2PXT5MJ&issuer=Bruce+Wayne&period=114514&algorithm=SHA256&digits=8"));
 			Assert.AreEqual(@"JTQZIMD5U2PXT5MJ", service.Secret);
@@ -173,6 +180,7 @@ namespace UnitTest
 			Assert.AreEqual(114514U, service.Period);
 			Assert.AreEqual(HmacAlgorithmName.SHA256, service.Algorithm);
 			Assert.AreEqual(8U, service.Digits);
+			Assert.AreEqual(TotpOutputType.RFC, service.OutputType);
 		}
 
 		[TestMethod]
@@ -188,6 +196,7 @@ namespace UnitTest
 			service.Digits = (uint)token.Length;
 			service.Algorithm = HmacAlgorithmName.SHA1;
 			service.ExtraGap = 1;
+			service.OutputType = TotpOutputType.RFC;
 
 			Console.WriteLine(service.GetToken(timestamp));
 			Console.WriteLine(service.GetToken(timestamp + service.Period));
