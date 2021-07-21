@@ -1,4 +1,6 @@
 using CryptoBase.DataFormatExtensions;
+using CryptoBase.Digests;
+using CryptoBase.Macs.Hmac;
 using JetBrains.Annotations;
 using System;
 using System.Buffers;
@@ -9,7 +11,6 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using TotpLib.HmacAlgorithmNames;
 using TotpLib.TimeServices;
 using Volo.Abp.DependencyInjection;
 
@@ -25,7 +26,7 @@ namespace TotpLib.TotpServices
 
 		private const uint DefaultPeriod = 30;
 		private const uint DefaultDigits = 6;
-		private static readonly HmacAlgorithmName DefaultAlgorithm = HmacAlgorithmName.SHA1;
+		private const DigestType DefaultAlgorithm = DigestType.Sha1;
 
 		#endregion
 
@@ -37,7 +38,7 @@ namespace TotpLib.TotpServices
 
 		public uint Period { get; set; } = DefaultPeriod;
 
-		public HmacAlgorithmName Algorithm { get; set; } = DefaultAlgorithm;
+		public DigestType Algorithm { get; set; } = DefaultAlgorithm;
 
 		public uint Digits { get; set; } = 6;
 
@@ -84,17 +85,17 @@ namespace TotpLib.TotpServices
 
 		public string GetToken(long timestamp)
 		{
-			using var hmac = CreateHmac(Algorithm.Name);
-
-			hmac.Key = Secret.AsSpan().FromBase32String();
+			var key = Secret.AsSpan().FromBase32String();
+			using var hmac = HmacUtils.Create(Algorithm, key);
 
 			var ts = (ulong)(timestamp / Period);
 
 			Span<byte> temp = stackalloc byte[sizeof(ulong)];
 			BinaryPrimitives.WriteUInt64BigEndian(temp, ts);
+			hmac.Update(temp);
 
-			Span<byte> hash = stackalloc byte[hmac.HashSize >> 3];
-			hmac.TryComputeHash(temp, hash, out _);
+			Span<byte> hash = stackalloc byte[hmac.Length];
+			hmac.GetMac(hash);
 
 			var offset = hash[^1] & 0xF;
 			var i = BinaryPrimitives.ReadUInt32BigEndian(hash[offset..]) & 0x7FFFFFFF;
@@ -149,13 +150,7 @@ namespace TotpLib.TotpServices
 
 			if (!Algorithm.Equals(DefaultAlgorithm))
 			{
-				const string hmac = @"HMAC";
-				var name = Algorithm.Name;
-				if (name.StartsWith(hmac))
-				{
-					name = name[hmac.Length..];
-				}
-				query[@"algorithm"] = name;
+				query[@"algorithm"] = MapToString(Algorithm);
 			}
 
 			if (Digits is not DefaultDigits)
@@ -199,12 +194,8 @@ namespace TotpLib.TotpServices
 			var algorithm = DefaultAlgorithm;
 			if (!string.IsNullOrEmpty(algorithmStr))
 			{
-				algorithm = new HmacAlgorithmName($@"HMAC{algorithmStr.ToUpperInvariant()}");
-				try
-				{
-					CreateHmac(algorithm.Name).Dispose();
-				}
-				catch (Exception)
+				algorithm = MapFromString(algorithmStr);
+				if (!Enum.IsDefined(algorithm))
 				{
 					return false;
 				}
@@ -309,23 +300,55 @@ namespace TotpLib.TotpServices
 			});
 		}
 
-		private static HMAC CreateHmac(string name)
-		{
-			var hmac = HMAC.Create(name);
-			if (hmac is null)
-			{
-				throw new MissingMethodException($@"Cannot found HMAC-{name}");
-			}
-
-			return hmac;
-		}
-
 		private static bool IsSameToken(string expected, string input)
 		{
 			return CryptographicOperations.FixedTimeEquals(
 				MemoryMarshal.AsBytes(expected.AsSpan()),
 				MemoryMarshal.AsBytes(input.AsSpan())
 			);
+		}
+
+		private static string MapToString(DigestType type)
+		{
+			return type switch
+			{
+				DigestType.Sm3 => @"SM3",
+				DigestType.Md5 => @"MD5",
+				DigestType.Sha1 => @"SHA1",
+				DigestType.Sha256 => @"SHA256",
+				DigestType.Sha384 => @"SHA384",
+				DigestType.Sha512 => @"SHA512",
+				_ => @"SHA1"
+			};
+		}
+
+		private static DigestType MapFromString(string str)
+		{
+			if (string.Equals(str, @"SM3", StringComparison.OrdinalIgnoreCase))
+			{
+				return DigestType.Sm3;
+			}
+			if (string.Equals(str, @"MD5", StringComparison.OrdinalIgnoreCase))
+			{
+				return DigestType.Md5;
+			}
+			if (string.Equals(str, @"SHA1", StringComparison.OrdinalIgnoreCase))
+			{
+				return DigestType.Sha1;
+			}
+			if (string.Equals(str, @"SHA256", StringComparison.OrdinalIgnoreCase))
+			{
+				return DigestType.Sha256;
+			}
+			if (string.Equals(str, @"SHA384", StringComparison.OrdinalIgnoreCase))
+			{
+				return DigestType.Sha384;
+			}
+			if (string.Equals(str, @"SHA512", StringComparison.OrdinalIgnoreCase))
+			{
+				return DigestType.Sha512;
+			}
+			return (DigestType)(-1);
 		}
 	}
 }

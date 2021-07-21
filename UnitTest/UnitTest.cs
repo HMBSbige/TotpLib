@@ -1,9 +1,9 @@
 using CryptoBase.DataFormatExtensions;
+using CryptoBase.Digests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using TotpLib.HmacAlgorithmNames;
 using TotpLib.TimeServices;
 using TotpLib.TotpServices;
 
@@ -71,7 +71,8 @@ namespace UnitTest
 			service.Secret = Encoding.ASCII.GetBytes(rawSecret).AsSpan().ToBase32String();
 			service.Period = 30;
 			service.Digits = (uint)expected.Length;
-			service.Algorithm = new HmacAlgorithmName(@"HMAC" + mode);
+			Assert.IsTrue(Enum.TryParse(mode, true, out DigestType algorithm));
+			service.Algorithm = algorithm;
 			service.OutputType = TotpOutputType.RFC;
 
 			Assert.AreEqual(expected, service.GetToken(timestamp));
@@ -90,7 +91,7 @@ namespace UnitTest
 			var service = GetRequiredService<ITotpService>();
 			service.Secret = Encoding.ASCII.GetBytes(@"12345678901234567890").AsSpan().ToBase32String();
 			service.Period = 30;
-			service.Algorithm = HmacAlgorithmName.SHA1;
+			service.Algorithm = DigestType.Sha1;
 			service.Digits = 5;
 			service.OutputType = TotpOutputType.Steam;
 
@@ -112,7 +113,7 @@ namespace UnitTest
 			service.Period = 114514;
 			Assert.AreEqual(@"otpauth://totp/?secret=JTQZIMD5U2PXT5MJ&issuer=HMBSbige&period=114514", service.GetUri());
 
-			service.Algorithm = HmacAlgorithmName.SHA256;
+			service.Algorithm = DigestType.Sha256;
 			Assert.AreEqual(@"otpauth://totp/?secret=JTQZIMD5U2PXT5MJ&issuer=HMBSbige&period=114514&algorithm=SHA256", service.GetUri());
 
 			service.Digits = 8;
@@ -133,7 +134,7 @@ namespace UnitTest
 			Assert.AreEqual(string.Empty, service.Label);
 			Assert.AreEqual(null, service.Issuer);
 			Assert.AreEqual(30U, service.Period);
-			Assert.AreEqual(HmacAlgorithmName.SHA1, service.Algorithm);
+			Assert.AreEqual(DigestType.Sha1, service.Algorithm);
 			Assert.AreEqual(6U, service.Digits);
 			Assert.AreEqual(TotpOutputType.RFC, service.OutputType);
 
@@ -142,7 +143,7 @@ namespace UnitTest
 			Assert.AreEqual(string.Empty, service.Label);
 			Assert.AreEqual(@"HMBSbige", service.Issuer);
 			Assert.AreEqual(30U, service.Period);
-			Assert.AreEqual(HmacAlgorithmName.SHA1, service.Algorithm);
+			Assert.AreEqual(DigestType.Sha1, service.Algorithm);
 			Assert.AreEqual(6U, service.Digits);
 			Assert.AreEqual(TotpOutputType.RFC, service.OutputType);
 
@@ -151,7 +152,7 @@ namespace UnitTest
 			Assert.AreEqual(string.Empty, service.Label);
 			Assert.AreEqual(@"HMBSbige", service.Issuer);
 			Assert.AreEqual(114514U, service.Period);
-			Assert.AreEqual(HmacAlgorithmName.SHA1, service.Algorithm);
+			Assert.AreEqual(DigestType.Sha1, service.Algorithm);
 			Assert.AreEqual(6U, service.Digits);
 			Assert.AreEqual(TotpOutputType.RFC, service.OutputType);
 
@@ -160,7 +161,7 @@ namespace UnitTest
 			Assert.AreEqual(string.Empty, service.Label);
 			Assert.AreEqual(@"HMBSbige", service.Issuer);
 			Assert.AreEqual(114514U, service.Period);
-			Assert.AreEqual(HmacAlgorithmName.SHA256, service.Algorithm);
+			Assert.AreEqual(DigestType.Sha256, service.Algorithm);
 			Assert.AreEqual(6U, service.Digits);
 			Assert.AreEqual(TotpOutputType.RFC, service.OutputType);
 
@@ -169,7 +170,7 @@ namespace UnitTest
 			Assert.AreEqual(string.Empty, service.Label);
 			Assert.AreEqual(@"HMBSbige", service.Issuer);
 			Assert.AreEqual(114514U, service.Period);
-			Assert.AreEqual(HmacAlgorithmName.SHA256, service.Algorithm);
+			Assert.AreEqual(DigestType.Sha256, service.Algorithm);
 			Assert.AreEqual(8U, service.Digits);
 			Assert.AreEqual(TotpOutputType.RFC, service.OutputType);
 
@@ -178,7 +179,7 @@ namespace UnitTest
 			Assert.AreEqual(@"Google 验证器", service.Label);
 			Assert.AreEqual(@"Bruce Wayne", service.Issuer);
 			Assert.AreEqual(114514U, service.Period);
-			Assert.AreEqual(HmacAlgorithmName.SHA256, service.Algorithm);
+			Assert.AreEqual(DigestType.Sha256, service.Algorithm);
 			Assert.AreEqual(8U, service.Digits);
 			Assert.AreEqual(TotpOutputType.RFC, service.OutputType);
 		}
@@ -194,7 +195,7 @@ namespace UnitTest
 			service.Secret = Encoding.ASCII.GetBytes(rawSecret).AsSpan().ToBase32String();
 			service.Period = 30;
 			service.Digits = (uint)token.Length;
-			service.Algorithm = HmacAlgorithmName.SHA1;
+			service.Algorithm = DigestType.Sha1;
 			service.ExtraGap = 1;
 			service.OutputType = TotpOutputType.RFC;
 

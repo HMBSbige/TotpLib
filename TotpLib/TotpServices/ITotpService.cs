@@ -1,7 +1,7 @@
+using CryptoBase.Digests;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using TotpLib.HmacAlgorithmNames;
 using Volo.Abp.DependencyInjection;
 
 namespace TotpLib.TotpServices
@@ -16,7 +16,7 @@ namespace TotpLib.TotpServices
 
 		uint Period { get; set; }
 
-		HmacAlgorithmName Algorithm { get; set; }
+		DigestType Algorithm { get; set; }
 
 		uint Digits { get; set; }
 
