@@ -8,9 +8,9 @@ namespace TotpLib.TimeServices
 	[UsedImplicitly]
 	public class DefaultTimeService : ITimeService
 	{
-		public ValueTask<DateTime> GetUtcNowAsync(CancellationToken cancellationToken = default)
+		public ValueTask<DateTimeOffset> GetUtcNowAsync(CancellationToken cancellationToken = default)
 		{
-			return ValueTask.FromResult(DateTime.UtcNow);
+			return ValueTask.FromResult(DateTimeOffset.UtcNow);
 		}
 	}
 }

@@ -28,7 +28,7 @@ namespace TotpLib.TotpServices
 
 		ValueTask<string> GetTokenAsync(CancellationToken cancellationToken = default);
 
-		string GetToken(DateTime utcTime);
+		string GetToken(DateTimeOffset utcTime);
 
 		string GetToken(long timestamp);
 
@@ -38,7 +38,7 @@ namespace TotpLib.TotpServices
 
 		ValueTask<bool> ValidateTokenAsync(string? token, CancellationToken cancellationToken = default);
 
-		bool ValidateToken(string? token, DateTime utcTime);
+		bool ValidateToken(string? token, DateTimeOffset utcTime);
 
 		bool ValidateToken(string? token, long timestamp);
 	}

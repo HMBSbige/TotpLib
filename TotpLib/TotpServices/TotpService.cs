@@ -77,10 +77,9 @@ namespace TotpLib.TotpServices
 			return GetToken(time);
 		}
 
-		public string GetToken(DateTime utcTime)
+		public string GetToken(DateTimeOffset utcTime)
 		{
-			var timestamp = GetTimeStamp(utcTime);
-			return GetToken(timestamp);
+			return GetToken(utcTime.ToUnixTimeSeconds());
 		}
 
 		public string GetToken(long timestamp)
@@ -225,10 +224,9 @@ namespace TotpLib.TotpServices
 			return ValidateToken(token, time);
 		}
 
-		public bool ValidateToken(string? token, DateTime utcTime)
+		public bool ValidateToken(string? token, DateTimeOffset utcTime)
 		{
-			var timestamp = GetTimeStamp(utcTime);
-			return ValidateToken(token, timestamp);
+			return ValidateToken(token, utcTime.ToUnixTimeSeconds());
 		}
 
 		public bool ValidateToken(string? token, long timestamp)
@@ -279,11 +277,6 @@ namespace TotpLib.TotpServices
 			{
 				throw new ArgumentException(@"A valid secret must be set first!");
 			}
-		}
-
-		private static long GetTimeStamp(DateTime utcTime)
-		{
-			return (long)utcTime.Subtract(DateTime.UnixEpoch).TotalSeconds;
 		}
 
 		private static string GetSteamToken(uint i, int length)

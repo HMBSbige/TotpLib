@@ -16,7 +16,9 @@ namespace UnitTest
 		public async Task TimeServiceTest()
 		{
 			var time = GetRequiredService<DefaultTimeService>();
-			var compare = await time.GetUtcNowAsync() - DateTime.UtcNow;
+			var compare = await time.GetUtcNowAsync() - DateTimeOffset.UtcNow;
+			Assert.IsTrue(compare.Duration() < TimeSpan.FromSeconds(1));
+			compare = await time.GetUtcNowAsync() - DateTimeOffset.Now;
 			Assert.IsTrue(compare.Duration() < TimeSpan.FromSeconds(1));
 		}
 
@@ -76,7 +78,8 @@ namespace UnitTest
 			service.OutputType = TotpOutputType.RFC;
 
 			Assert.AreEqual(expected, service.GetToken(timestamp));
-			Assert.AreEqual(expected, service.GetToken(DateTime.Parse(utcTimeStr)));
+			Assert.AreEqual(expected, service.GetToken(DateTimeOffset.FromUnixTimeSeconds(timestamp)));
+			Assert.AreEqual(expected, service.GetToken(new DateTimeOffset(DateTime.Parse(utcTimeStr), TimeSpan.Zero)));
 		}
 
 		[TestMethod]
@@ -203,6 +206,7 @@ namespace UnitTest
 			Console.WriteLine(service.GetToken(timestamp + service.Period));
 
 			Assert.AreEqual(shouldAccept, service.ValidateToken(token, timestamp));
+			Assert.AreEqual(shouldAccept, service.ValidateToken(token, DateTimeOffset.FromUnixTimeSeconds(timestamp)));
 		}
 	}
 }

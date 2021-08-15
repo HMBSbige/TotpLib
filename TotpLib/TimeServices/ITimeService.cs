@@ -7,6 +7,6 @@ namespace TotpLib.TimeServices
 {
 	public interface ITimeService : ITransientDependency
 	{
-		ValueTask<DateTime> GetUtcNowAsync(CancellationToken cancellationToken = default);
+		ValueTask<DateTimeOffset> GetUtcNowAsync(CancellationToken cancellationToken = default);
 	}
 }
