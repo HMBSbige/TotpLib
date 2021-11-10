@@ -3,15 +3,15 @@
   <Import Project="..\common.props" />
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <NoWarn>CS1591</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CryptoBase" Version="1.5.1" />
-    <PackageReference Include="Volo.Abp.Core" Version="4.4.3" />
+    <PackageReference Include="CryptoBase" Version="1.6.0" />
+    <PackageReference Include="Volo.Abp.Core" Version="4.4.4" />
   </ItemGroup>
 
 </Project>
