@@ -12,7 +12,7 @@
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.7" />
     <PackageReference Include="MSTest.TestFramework" Version="2.2.7" />
     <PackageReference Include="coverlet.collector" Version="3.1.0" PrivateAssets="all" />
-    <PackageReference Include="Volo.Abp.TestBase" Version="4.4.4" />
+    <PackageReference Include="Volo.Abp.TestBase" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
