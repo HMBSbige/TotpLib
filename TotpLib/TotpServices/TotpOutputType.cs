@@ -1,8 +1,7 @@
-namespace TotpLib.TotpServices
+namespace TotpLib.TotpServices;
+
+public enum TotpOutputType
 {
-	public enum TotpOutputType
-	{
-		RFC,
-		Steam
-	}
+	RFC,
+	Steam
 }

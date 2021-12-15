@@ -1,16 +1,11 @@
-using Microsoft.Extensions.DependencyInjection;
-using Volo.Abp.DependencyInjection;
-using Volo.Abp.Testing;
+namespace UnitTest;
 
-namespace UnitTest
+public class TestBase : AbpIntegratedTest<UnitTestModule>
 {
-	public class TestBase : AbpIntegratedTest<UnitTestModule>
-	{
-		protected IAbpLazyServiceProvider LazyServiceProvider { get; }
+	protected IAbpLazyServiceProvider LazyServiceProvider { get; }
 
-		protected TestBase()
-		{
-			LazyServiceProvider = Application.ServiceProvider.GetRequiredService<IAbpLazyServiceProvider>();
-		}
+	protected TestBase()
+	{
+		LazyServiceProvider = Application.ServiceProvider.GetRequiredService<IAbpLazyServiceProvider>();
 	}
 }

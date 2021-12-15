@@ -1,45 +1,38 @@
-using CryptoBase.Digests;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Volo.Abp.DependencyInjection;
+namespace TotpLib.TotpServices;
 
-namespace TotpLib.TotpServices
+public interface ITotpService : ITransientDependency
 {
-	public interface ITotpService : ITransientDependency
-	{
-		string? Secret { get; set; }
+	string? Secret { get; set; }
 
-		string? Label { get; set; }
+	string? Label { get; set; }
 
-		string? Issuer { get; set; }
+	string? Issuer { get; set; }
 
-		uint Period { get; set; }
+	uint Period { get; set; }
 
-		DigestType Algorithm { get; set; }
+	DigestType Algorithm { get; set; }
 
-		uint Digits { get; set; }
+	uint Digits { get; set; }
 
-		TotpOutputType OutputType { get; set; }
+	TotpOutputType OutputType { get; set; }
 
-		uint ExtraGap { get; set; }
+	uint ExtraGap { get; set; }
 
-		void GenerateNewSecret(uint minimumBits = 80);
+	void GenerateNewSecret(uint minimumBits = 80);
 
-		ValueTask<string> GetTokenAsync(CancellationToken cancellationToken = default);
+	ValueTask<string> GetTokenAsync(CancellationToken cancellationToken = default);
 
-		string GetToken(DateTimeOffset utcTime);
+	string GetToken(DateTimeOffset utcTime);
 
-		string GetToken(long timestamp);
+	string GetToken(long timestamp);
 
-		string GetUri();
+	string GetUri();
 
-		bool TryParse(string? uri);
+	bool TryParse(string? uri);
 
-		ValueTask<bool> ValidateTokenAsync(string? token, CancellationToken cancellationToken = default);
+	ValueTask<bool> ValidateTokenAsync(string? token, CancellationToken cancellationToken = default);
 
-		bool ValidateToken(string? token, DateTimeOffset utcTime);
+	bool ValidateToken(string? token, DateTimeOffset utcTime);
 
-		bool ValidateToken(string? token, long timestamp);
-	}
+	bool ValidateToken(string? token, long timestamp);
 }
